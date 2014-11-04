@@ -2,6 +2,8 @@
 
 /* The sockets adress will be updated to it's correct location after testing */
 var ws = new WebSocket("ws://131.170.94.23:8888/websocket");
+var newData = [];
+var plotData = [];
 
 ws.onmessage = function(evt){
     /* Debug log, may be removed in a future version */
@@ -19,9 +21,23 @@ ws.onmessage = function(evt){
             type = 2;
         }
         if (cmd[0] === "Upstream") {
-          JSONData.push(JSON.parse(cmd[1]));
-          data = JSONData.slice()
-          refreshGraph();
+          plotData.splice(0,plotData.length);
+          plotData.values = [];
+          //newData = JSON.parse(cmd[1]);
+          newData.push(JSON.parse(cmd[1]));
+          newData.forEach(function(dataSeries, index) {
+              dataSeries.values.forEach(function(values,index) {
+                plotData.values.push(values);
+              })
+          })
+          tStart = 0;
+        //  newData.start.forEach(function(dataSeries, index) {
+         //     plotData.push();
+         // })
+
+          //l1.updateData(newData);
+          //data = JSONData.slice()
+          //refreshGraph();
         }
     }
 }

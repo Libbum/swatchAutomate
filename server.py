@@ -3,6 +3,7 @@ import time
 import os
 import signal
 import uuid
+import numpy as np
 from datetime import datetime
 from tornado import gen, ioloop, web, websocket
 from tornado.options import define, options, parse_command_line
@@ -15,11 +16,22 @@ clients = dict() #List of all connections
 class UpstreamThread(threading.Thread):
     def run(self):
         print 'Thread', self.getName(), 'started.'
-        conc = 0
-        for ii in range(1, 10):
-            conc = conc + ii
-            broadcast("Upstream&{ \"id\": " + str(ii) + ", \"timestamp\": \"" + str(datetime.now()) + "\", \"conc\": " + str(conc) + "}")
-            time.sleep(2)
+        conc = [0, 0, 0];
+        vconc = [200, 300, 250];
+        step = 3*1000; #measurment time in miliseconds
+        for ii in range(1, 11):
+            start = time.time() * 1000 #Start time of run in miliseconds
+            #Simulate grabbing 3 samples
+            conc[0] = ii + np.random.rand(1)*vconc[0]
+            time.sleep(1)
+            conc[1] = ii + np.random.rand(1)*vconc[1]
+            time.sleep(1)
+            conc[2] = ii + np.random.rand(1)*vconc[2]
+            time.sleep(1)
+            end = time.time() * 1000 #Start time of run in miliseconds
+            broadcast("Upstream&{\"start\": " + str(start) + ",\"end\": " + str(end) + ",\"step\": " + str(step) + ",\"names\": [\"UpStream\",\"DownStream\"],\"values\": [[" + str(np.mean(conc)) + "],[350]]}")
+            #broadcast("Upstream&{ \"id\": " + str(ii) + ", \"timestamp\": \"" + str(datetime.now()) + "\", \"conc\": " + str(conc) + "}")
+
         print 'Thread', self.getName(), 'ended.'
 
 class DownstreamThread(threading.Thread):

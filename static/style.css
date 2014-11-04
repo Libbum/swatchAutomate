@@ -1,21 +1,21 @@
 html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden 
+    overflow: hidden
 }
 
 #console {
-    font-size: 14pt; 
+    font-size: 14pt;
     font-family: Arial, Helvetica, sans-serif;
-    height: 400px; 
-    overflow: auto; 
+    height: 400px;
+    overflow: auto;
     background: white;
     border: 1px solid #DDD;
     border-radius: 5px;
     box-shadow: 0 0 5px #DDD inset;
     color: #666;
     padding: 5px 10px;
-    outline: none;   
+    outline: none;
 }
 
 #debug {
@@ -35,7 +35,7 @@ form input[type=text] {
     color: #666;
     float: left;
     padding: 5px 10px;
-    outline: none;   
+    outline: none;
     width: 330px;
 }
 
@@ -106,4 +106,55 @@ form input[type=text] {
 .inline {
     display: inline;
     border-style: none;
+}
+
+
+svg.line-graph text {
+	cursor: default;
+}
+
+svg.line-graph .hover-line {
+	stroke: #6E7B8B;
+}
+
+svg.line-graph .hide {
+	opacity: 0;
+}
+
+svg.line-graph .axis {
+  shape-rendering: crispEdges;
+}
+
+svg.line-graph .x.axis line {
+  stroke: #D3D3D3;
+}
+
+svg.line-graph .x.axis .minor {
+  stroke-opacity: .5;
+}
+
+svg.line-graph .x.axis path {
+  display: none;
+}
+
+svg.line-graph .x.axis text {
+	font-size: 10px;
+}
+
+svg.line-graph .y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
+
+svg.line-graph .y.axis text {
+	font-size: 12px;
+}
+
+svg.line-graph .scale-button:not(.selected):hover {
+	text-decoration: underline;
+	cursor: pointer !important;
+}
+
+svg.line-graph .date-label {
+	fill: #6E7B8B;
 }
