@@ -1,137 +1,144 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <html>
-<head>
-    <title>Control panel for the Swatch Test Rig</title>
-    <script src="static/d3.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="static/style.css" />
-    <style>
-        .axis path,
-        .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-        }
+    <head>
+        <title>Control panel for the Swatch Test Rig</title>
+        <script src="static/d3.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/style.css" />
+        <style>
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: #000;
+                shape-rendering: crispEdges;
+            }
 
-        .line {
-            fill: none;
-            stroke: steelblue;
-            stroke-width: 1.5px;
-        }
-    </style>
-</head>
-<body>
- <p>
-    <div id="demo">
-  <p class="value">Hint: Add many entries</p>
-  <a href="javascript:void(0)" class="add-data action-button">Add data</a>
-  <a href="javascript:void(0)" class="remove-data action-button destroy">Delete data</a>
-  <a href="javascript:void(0)" class="clear-data action-button destroy">Clear data</a>
-</div>
+            .line {
+                fill: none;
+                stroke: steelblue;
+                stroke-width: 1.5px;
+            }
+        </style>
+    </head>
+    <body>
+        <p>
+            <div id="demo">
+                <p class="value">Hint: Add many entries</p>
+                <a href="javascript:void(0)" class="add-data action-button">Add data</a>
+                <a href="javascript:void(0)" class="remove-data action-button destroy">Delete data</a>
+                <a href="javascript:void(0)" class="clear-data action-button destroy">Clear data</a>
+        </div>
 
-</p>
+    </p>
 
-    
+
     <div id="debug">
         <a href="#modal">
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 588.42 568.8">
-            <path style="fill:black; stroke:none" d="M 10.49,177.03 L 31.17,178.56 C 52.61,154.32 61.03,82.59 187.38,96.63 C 182.79,403.95 48.02,436.37 56.44,499.41 C 59.50,535.15 87.84,557.10 118.47,558.38 C 215.21,555.06 210.87,424.63 240.99,95.86 L 365.80,95.86 C 359.17,211.75 341.04,327.63 339,441.22 C 340.53,516.77 386.48,557.10 446.97,557.61 C 546.52,560.93 577.92,444.79 577.92,395.27 L 556.47,395.27 C 554.43,436.11 534.78,465.47 492.92,467.25 C 378.82,468.78 441.61,266.63 442.38,97.4 L 577.92,98.16 L 577.15,11.63 C 13.80,8.90 85.31,-2.13 10.49,177.03 z" />
-        </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 588.42 568.8">
+                <path style="fill:black; stroke:none" d="M 10.49,177.03 L 31.17,178.56 C 52.61,154.32 61.03,82.59 187.38,96.63 C 182.79,403.95 48.02,436.37 56.44,499.41 C 59.50,535.15 87.84,557.10 118.47,558.38 C 215.21,555.06 210.87,424.63 240.99,95.86 L 365.80,95.86 C 359.17,211.75 341.04,327.63 339,441.22 C 340.53,516.77 386.48,557.10 446.97,557.61 C 546.52,560.93 577.92,444.79 577.92,395.27 L 556.47,395.27 C 554.43,436.11 534.78,465.47 492.92,467.25 C 378.82,468.78 441.61,266.63 442.38,97.4 L 577.92,98.16 L 577.15,11.63 C 13.80,8.90 85.31,-2.13 10.49,177.03 z" />
+            </svg>
         </a>
     </div>
     <aside id="modal">
         <header><h1>Command Panel</h1></header>
         <section>
-        <div id="console"></div>
-        <form id="conversation" onsubmit="DispatchResponse()" action="javascript:void(0);">
-            <input type="text" id="message" name="message" autocomplete="off" />
-            <input type="submit" id="sub" name="sub" value="Send" class="btn inline" />
-        </form>
+            <div id="console"></div>
+            <form id="conversation" onsubmit="DispatchResponse()" action="javascript:void(0);">
+                <input type="text" id="message" name="message" autocomplete="off" />
+                <input type="submit" id="sub" name="sub" value="Send" class="btn inline" />
+            </form>
         </section>
         <footer><a href="#" class="btn">Close</a></footer>
     </aside>
-    
+
     <script>
-    JSONData = [ { "id": 3, "created_at": "Sun May 05 2013", "amount": 12000},
-  { "id": 1, "created_at": "Mon May 13 2013", "amount": 2000},
-  { "id": 2, "created_at": "Thu Jun 06 2013", "amount": 17000},
-  { "id": 4, "created_at": "Thu May 09 2013", "amount": 15000},
-  { "id": 5, "created_at": "Mon Jul 01 2013", "amount": 16000}
- ];
-    
+        JSONData = [ { "id": 1, "timestamp": Date.now().toString(), "conc": 12},
+                    { "id": 2, "timestamp": Date.now().toString(), "conc": 2},
+                    { "id": 3, "timestamp": Date.now().toString(), "conc": 17},
+                    { "id": 4, "timestamp": Date.now().toString(), "conc": 10},
+                    { "id": 5, "timestamp": Date.now().toString(), "conc": 16},
+                    { "id": 6, "timestamp": Date.now().toString(), "conc": 12},
+                    { "id": 7, "timestamp": Date.now().toString(), "conc": 2},
+                    { "id": 8, "timestamp": Date.now().toString(), "conc": 17},
+                    { "id": 9, "timestamp": Date.now().toString(), "conc": 10},
+                    { "id": 10, "timestamp": Date.now().toString(), "conc": 16},
+                   ];
 
-    (function() {
-       // Just to make sure that JSONData is not altered between examples
-       var format = d3.time.format("%a %b %d %Y")
-       var amountFn = function(d) { return d.amount }
-       var dateFn = function(d) { return format.parse(d.created_at) }
-       var data = JSONData.slice()
-       var x = d3.time.scale()
-        .range([10, 280])
 
-      var y = d3.scale.linear()
-        .range([180, 10])
-      var svg = d3.select("#demo").append("svg:svg")
-       .attr("width", 300)
-       .attr("height", 200)
-      var start = d3.min(data, dateFn)
-      var end = d3.max(data, dateFn)
+        //(function() {
+            var format = d3.time.format("%Y-%m-%d %H:%M:%S.%L")
+            var concFn = function(d) { return d.conc }
+            var idFn = function(d) { return d.id }
+            var dateFn = function(d) { return format.parse(d.timestamp) }
+            var data = JSONData.slice()
+            var x = d3.time.scale()
+            .range([10, 280])
 
-      var refreshGraph = function() {
+            var y = d3.scale.linear()
+            .range([180, 10])
+            var svg = d3.select("#demo").append("svg:svg")
+            .attr("width", 300)
+            .attr("height", 200)
+            var start = d3.min(data, idFn)
+            var end = d3.max(data, idFn)
 
-        x.domain(d3.extent(data, dateFn))
-        y.domain(d3.extent(data, amountFn))
+            var refreshGraph = function() {
 
-        var circles = svg.selectAll("circle").data(data, dateFn)
-      
-        circles.transition()
-         .attr("cx", function(d) { return x(dateFn(d)) })
-         .attr("cy", function(d) { return y(amountFn(d)) })
+                x.domain(d3.extent(data, idFn))
+                y.domain(d3.extent(data, concFn))
 
-        circles.enter()
-         .append("svg:circle")
-         .attr("r", 4)
-         .attr("cx", function(d) { return x(dateFn(d)) })
-         .attr("cy", function(d) { return y(amountFn(d)) })
-         .on("click", function(d) {
-            d3.select("#demo .value").text("Date: " + d.created_at + " amount: " + d.amount)
-         })
-       
-        circles.exit()
-         .remove()
-      }
+                var circles = svg.selectAll("circle").data(data, idFn)
 
-      d3.selectAll("#demo .add-data")
-        .on("click", function() {
-          var date = new Date(end.getTime() + Math.random() * (end.getTime() - start.getTime()))
-          obj = {
-            'id': Math.floor(Math.random()*70),
-            'amount': Math.floor(1000 + Math.random()*20001),
-            'created_at': date.toDateString()
-          }
-          data.push(obj)
-          refreshGraph()
-        })
-        
-    d3.selectAll("#demo .remove-data")
-    .on("click", function() {
-      var idx = Math.floor(Math.random() * data.length)
-      data.splice( Math.floor(Math.random() * data.length), 1 )
-      refreshGraph()
-    })
-        d3.selectAll("#demo .clear-data")
-        .on("click", function() {
-          data.splice(0, data.length)
-          refreshGraph()
-        })
+                circles.transition()
+                .attr("cx", function(d) { return x(idFn(d)) })
+                .attr("cy", function(d) { return y(concFn(d)) })
 
-      refreshGraph()
-      
-    })();
+                circles.enter()
+                .append("svg:circle")
+                .attr("r", 4)
+                .attr("cx", function(d) { return x(idFn(d)) })
+                .attr("cy", function(d) { return y(concFn(d)) })
+                .on("click", function(d) {
+                    d3.select("#demo .value").text("Timestamp: " + d.timestamp + " conc: " + d.conc)
+                })
 
-    
+                circles.exit()
+                .remove()
+            }
+
+            d3.selectAll("#demo .add-data")
+            .on("click", function() {
+                var id = end + Math.random() * (end - start)
+                obj = {
+                    'id': id,
+                    'conc': Math.floor(1000 + Math.random()*11),
+                    'timestamp': "2014-11-04 10:51:29.3"
+                }
+                data.push(obj)
+                refreshGraph()
+            })
+
+            d3.selectAll("#demo .remove-data")
+            .on("click", function() {
+                var idx = Math.floor(Math.random() * data.length)
+                data.splice( Math.floor(Math.random() * data.length), 1 )
+                refreshGraph()
+            })
+
+            d3.selectAll("#demo .clear-data")
+            .on("click", function() {
+                JSONData.splice(0, JSONData.length)
+                data.splice(0, data.length)
+                refreshGraph()
+            })
+
+            refreshGraph()
+
+    //    })();
+
+
     </script>
     <script type="text/javascript" src="static/socket.js"></script>
- 
-    </body>
+
+</body>
 </html>
