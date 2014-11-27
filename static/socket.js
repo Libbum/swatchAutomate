@@ -1,7 +1,9 @@
 /* Socket controlling functions */
 
 /* The sockets adress will be updated to it's correct location after testing */
-var ws = new WebSocket("ws://192.168.1.103:8888/websocket");
+var ws = new WebSocket("ws://131.170.94.23:8888/websocket");
+var newData = [];
+var plotData = [];
 
 ws.onmessage = function(evt){
     /* Debug log, may be removed in a future version */
@@ -18,11 +20,28 @@ ws.onmessage = function(evt){
             /* Startup */
             type = 2;
         }
-        data.push({"x" : 4,"y" : 2});
-        redraw();
+        if (cmd[0] === "Upstream") {
+          plotData.splice(0,plotData.length);
+          plotData.values = [];
+          //newData = JSON.parse(cmd[1]);
+          newData.push(JSON.parse(cmd[1]));
+          newData.forEach(function(dataSeries, index) {
+              dataSeries.values.forEach(function(values,index) {
+                plotData.values.push(values);
+              })
+          })
+          tStart = 0;
+        //  newData.start.forEach(function(dataSeries, index) {
+         //     plotData.push();
+         // })
+
+          //l1.updateData(newData);
+          //data = JSONData.slice()
+          //refreshGraph();
+        }
     }
 }
-   
+
 function DispatchResponse(){
     /* A debugging function to take the command written in the console and push it through the web socket */
     var userInput = document.getElementById("message").value;

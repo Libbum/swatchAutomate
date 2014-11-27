@@ -3,6 +3,8 @@ import time
 import os
 import signal
 import uuid
+import numpy as np
+from datetime import datetime
 from tornado import gen, ioloop, web, websocket
 from tornado.options import define, options, parse_command_line
 
@@ -14,11 +16,22 @@ clients = dict() #List of all connections
 class UpstreamThread(threading.Thread):
     def run(self):
         print 'Thread', self.getName(), 'started.'
-        conc = 0
-        for ii in range(1, 10):
-            conc = conc + ii
-            broadcast(str(conc))
-            time.sleep(2)
+        conc = [0, 0, 0];
+        vconc = [200, 300, 250];
+        step = 3*1000; #measurment time in miliseconds
+        for ii in range(1, 11):
+            start = time.time() * 1000 #Start time of run in miliseconds
+            #Simulate grabbing 3 samples
+            conc[0] = ii + np.random.rand(1)*vconc[0]
+            time.sleep(1)
+            conc[1] = ii + np.random.rand(1)*vconc[1]
+            time.sleep(1)
+            conc[2] = ii + np.random.rand(1)*vconc[2]
+            time.sleep(1)
+            end = time.time() * 1000 #Start time of run in miliseconds
+            broadcast("Upstream&{\"start\": " + str(start) + ",\"end\": " + str(end) + ",\"step\": " + str(step) + ",\"names\": [\"UpStream\",\"DownStream\"],\"values\": [[" + str(np.mean(conc)) + "],[350]]}")
+            #broadcast("Upstream&{ \"id\": " + str(ii) + ", \"timestamp\": \"" + str(datetime.now()) + "\", \"conc\": " + str(conc) + "}")
+
         print 'Thread', self.getName(), 'ended.'
 
 class DownstreamThread(threading.Thread):
@@ -43,7 +56,7 @@ def broadcast(message):
             del clients[ids]
         else:
             ws.write_message(message)
-            
+
 def sig_handler(sig, frame):
     """
     Calls shutdown on the next I/O Loop iteration. Should only be used from a signal handler, unsafe otherwise.
@@ -52,15 +65,15 @@ def sig_handler(sig, frame):
 
 def shutdown():
     """
-    Graceful shutdown of all services. Can be called with kill -2 for example, a CTRL+C keyboard interrupt, 
+    Graceful shutdown of all services. Can be called with kill -2 for example, a CTRL+C keyboard interrupt,
     or 'shutdown' from the debug console on the panel.
     """
     broadcast("Automation server is shutting down.")
     print "Shutting down Automation server (will wait up to %s seconds to complete running threads ...)" % MAX_WAIT
-    
+
     instance = ioloop.IOLoop.instance()
     deadline = time.time() + MAX_WAIT
- 
+
     def terminate():
         """
         Recursive method to wait for incomplete async callbacks and timeouts
@@ -72,7 +85,7 @@ def shutdown():
             instance.stop()
             print "Shutdown."
     terminate()
-    
+
 class IndexHandler(web.RequestHandler):
     """
     Serve up the panel
@@ -92,11 +105,11 @@ class WebSocketHandler(websocket.WebSocketHandler):
         print "New Client: %s" % (self.id)
         self.write_message("Connected to Automation Server")
 
-    def on_message(self, message):        
+    def on_message(self, message):
         print "Message from Client %s: %s" % (self.id, message)
-        
+
         commands = message.split("&") #complex commands will be of the form command&command&command
-       
+
         #Most of these are now superfluous. Ultimately only Accept case is needed, but will keep them here until the production version.
         if (message == 'base'):
             self.write_message(u"Base Directory: " + BASEDIR)
@@ -116,12 +129,12 @@ class WebSocketHandler(websocket.WebSocketHandler):
                 #write_accept(commands[1] + '\n')
         else:
             self.write_message(u"Server echoed: " + message)
-        
+
     def on_close(self):
         print "Client %s disconnected." % self.id
         if self.id in clients:
             del clients[self.id]
-    
+
 app = web.Application([
     (r'/', IndexHandler),
     (r'/websocket', WebSocketHandler),
@@ -137,12 +150,12 @@ if __name__ == '__main__':
     #Signal Register
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
-    
+
     #Start the file watcher
     #ioloop.IOLoop.instance().add_callback(status_watcher)
     #Start the server main loop
-    ioloop.IOLoop.instance().start()        
-        
+    ioloop.IOLoop.instance().start()
+
 #tCPC12 = 3 #s
 #measureUpstream = UpstreamThread()
 #measureDownstream = DownstreamThread()
